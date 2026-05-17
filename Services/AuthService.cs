@@ -25,5 +25,33 @@ namespace MediFlowApi.Services
             var res= await _userManager.CreateAsync(user,registerDto.Password);
             return res;
         }
+
+        public async Task<AuthResult> LoginAsync(LoginDto loginDto) 
+        { 
+           var user=await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user == null) 
+            {
+                return new AuthResult
+                {
+                    IsAuthenticated = false,
+                    Message = "Wrong Email Or Password"
+                };
+            }
+            bool isPasswordValid=await _userManager.CheckPasswordAsync(user,loginDto.Password);
+            if (!isPasswordValid) 
+            {
+                return new AuthResult
+                {
+                    IsAuthenticated = false,
+                    Message = "Wrong Email Or Password"
+                };
+            }
+            return new AuthResult
+            {
+                IsAuthenticated = true,
+                Message = "Logged in Successfully!",
+                UserName=user.UserName
+            };
+        }
     }
 }

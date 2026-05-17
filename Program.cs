@@ -30,6 +30,7 @@ namespace MediFlowApi
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<MedicineCreateDtoValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
 
             builder.Services.AddAutoMapper(options =>
             {

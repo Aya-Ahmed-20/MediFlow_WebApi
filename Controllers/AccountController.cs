@@ -25,8 +25,17 @@ namespace MediFlowApi.Controllers
                 return Ok(new {message= "User Registered Successfully!"});
             }
             return BadRequest();
+        }
 
-
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody]LoginDto loginDto)
+        {
+            var res=await _authService.LoginAsync(loginDto);
+            if (!res.IsAuthenticated)
+            {
+                return Unauthorized(new { message=res.Message});
+            }
+            return Ok(res);
         }
     }
 }
