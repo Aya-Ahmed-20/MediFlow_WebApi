@@ -4,6 +4,7 @@ using MediFlowApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediFlowApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260802221710_Creating_Prescription_And_PrescriptionItem_Tables")]
+    partial class Creating_Prescription_And_PrescriptionItem_Tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,6 +121,10 @@ namespace MediFlowApi.Migrations
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("PrescriptionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Symptoms")
                         .IsRequired()
@@ -539,7 +546,8 @@ namespace MediFlowApi.Migrations
 
             modelBuilder.Entity("MediFlowApi.Models.Consultation", b =>
                 {
-                    b.Navigation("Prescription");
+                    b.Navigation("Prescription")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MediFlowApi.Models.Doctor", b =>

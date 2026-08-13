@@ -3,6 +3,7 @@ using MediFlowApi.DTOs;
 using MediFlowApi.Interfaces;
 using MediFlowApi.Models;
 using MediFlowApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Xml.Linq;
 
@@ -11,6 +12,7 @@ namespace MediFlowApi.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:ApiVersion}/[Controller]")]
+    [Authorize]
     public class MedicinesController : ControllerBase
     {
         private readonly IMedicineServices _medicineService;
@@ -21,12 +23,13 @@ namespace MediFlowApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery]string? term,
            [FromQuery] int pageSize, [FromQuery] int pageNumber)
-        { 
-            var med =await _medicineService.GetAllAsync(term, pageSize, 
+        {
+            var med = await _medicineService.GetAllAsync(term, pageSize,
                 pageNumber);
             return Ok(med);
         }
         [HttpPost]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Post([FromBody] MedicineCreateDto medicineDto)
         {
             // لسنا بحاجة لفحص ModelState يدوياً إذا كان الكلاس عليه [ApiController]
@@ -57,6 +60,7 @@ namespace MediFlowApi.Controllers
           return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult> Delete(int id)
         {
             var isExisting = await _medicineService.GetByIdAsync(id);

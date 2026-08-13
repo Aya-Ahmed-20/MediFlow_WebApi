@@ -8,7 +8,6 @@ namespace MediFlowApi.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
 
-        // التعديل هنا: الـ RequestDelegate لازم يكون الأول
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
             _next = next;
@@ -23,8 +22,10 @@ namespace MediFlowApi.Middlewares
             }
             catch (Exception ex)
             {
-                // أضيفي $ قبل " لكي تعمل الـ {}
-                _logger.LogError(ex, $"حدث خطأ غير متوقع: {ex.Message}");
+                // استخدام ?. لمنع الـ NullReferenceException إذا لم توجد InnerException
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, $"Unexpected Error Occurred: {errorMessage}");
+
                 await HandelingExceptionAsync(context, ex);
             }
         }
@@ -34,11 +35,16 @@ namespace MediFlowApi.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
+            // إحضار أعمق InnerException للوصول لسبب SQL Server المباشر
+            var actualError = ex.InnerException?.InnerException?.Message
+                           ?? ex.InnerException?.Message
+                           ?? ex.Message;
+
             var errorDetails = new ErrorDetails
             {
                 StatusCode = context.Response.StatusCode,
-                ErrorMessage = "نعتذر يا هندسة، حدث خطأ داخلي ونعمل على إصلاحه.",
-                DetailedError = ex.Message
+                ErrorMessage = "An internal error occurred and we are working to fix it.",
+                DetailedError = actualError // سيطبع الخطأ الحقيقي من الداتا بيز مباشرة
             };
 
             var json = JsonSerializer.Serialize(errorDetails);

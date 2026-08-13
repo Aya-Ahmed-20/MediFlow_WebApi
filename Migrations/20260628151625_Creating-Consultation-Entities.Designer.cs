@@ -4,6 +4,7 @@ using MediFlowApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediFlowApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260628151625_Creating-Consultation-Entities")]
+    partial class CreatingConsultationEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,58 +235,6 @@ namespace MediFlowApi.Migrations
                     b.ToTable("Patient");
                 });
 
-            modelBuilder.Entity("MediFlowApi.Models.Prescription", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConsultationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DurationInDays")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConsultationId")
-                        .IsUnique();
-
-                    b.ToTable("Prescription");
-                });
-
-            modelBuilder.Entity("MediFlowApi.Models.PrescriptionItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Dose")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Instructions")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MedicineId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PrescriptionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicineId");
-
-                    b.HasIndex("PrescriptionId");
-
-                    b.ToTable("PrescriptionItem");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -419,7 +370,7 @@ namespace MediFlowApi.Migrations
 
             modelBuilder.Entity("MediFlowApi.Models.Consultation", b =>
                 {
-                    b.HasOne("MediFlowApi.Models.Doctor", "Doctor")
+                    b.HasOne("MediFlowApi.Models.Doctor", "dDctor")
                         .WithMany("Consultations")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -431,9 +382,9 @@ namespace MediFlowApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Doctor");
-
                     b.Navigation("Patient");
+
+                    b.Navigation("dDctor");
                 });
 
             modelBuilder.Entity("MediFlowApi.Models.Doctor", b =>
@@ -454,36 +405,6 @@ namespace MediFlowApi.Migrations
                         .HasForeignKey("ApplicationUserId");
 
                     b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("MediFlowApi.Models.Prescription", b =>
-                {
-                    b.HasOne("MediFlowApi.Models.Consultation", "Consultation")
-                        .WithOne("Prescription")
-                        .HasForeignKey("MediFlowApi.Models.Prescription", "ConsultationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Consultation");
-                });
-
-            modelBuilder.Entity("MediFlowApi.Models.PrescriptionItem", b =>
-                {
-                    b.HasOne("MediFlowApi.Models.Medicine", "Medicine")
-                        .WithMany()
-                        .HasForeignKey("MedicineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MediFlowApi.Models.Prescription", "Prescription")
-                        .WithMany("PrescriptionItems")
-                        .HasForeignKey("PrescriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Medicine");
-
-                    b.Navigation("Prescription");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -537,11 +458,6 @@ namespace MediFlowApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MediFlowApi.Models.Consultation", b =>
-                {
-                    b.Navigation("Prescription");
-                });
-
             modelBuilder.Entity("MediFlowApi.Models.Doctor", b =>
                 {
                     b.Navigation("Consultations");
@@ -550,11 +466,6 @@ namespace MediFlowApi.Migrations
             modelBuilder.Entity("MediFlowApi.Models.Patient", b =>
                 {
                     b.Navigation("consultations");
-                });
-
-            modelBuilder.Entity("MediFlowApi.Models.Prescription", b =>
-                {
-                    b.Navigation("PrescriptionItems");
                 });
 #pragma warning restore 612, 618
         }

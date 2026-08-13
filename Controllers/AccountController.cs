@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using MediFlowApi.DTOs;
 using MediFlowApi.Interfaces;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediFlowApi.Controllers
@@ -24,7 +25,8 @@ namespace MediFlowApi.Controllers
             if (res.Succeeded) {
                 return Ok(new {message= "User Registered Successfully!"});
             }
-            return BadRequest();
+            var errors = res.Errors.Select(e => e.Description);
+            return BadRequest(new {Errors=errors});
         }
 
         [HttpPost("login")]
