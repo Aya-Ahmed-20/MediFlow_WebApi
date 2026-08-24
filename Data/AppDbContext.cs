@@ -17,9 +17,20 @@ namespace MediFlowApi.Data
         public DbSet<Consultation> Consultations { get; set; }
         public DbSet<Prescription> Prescription { get; set; }
         public DbSet<PrescriptionItem> PrescriptionItem { get; set; }
+        public DbSet<DispensingRecord> DispensingRecord { get; set; }
 
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder); 
 
+            //  (Multiple Cascade Paths)
+            builder.Entity<DispensingRecord>()
+                .HasOne(d => d.Pharmacist)
+                .WithMany()
+                .HasForeignKey(d => d.PharmacistId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
 
     }
 }
