@@ -19,7 +19,7 @@ namespace MediFlowApi
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -63,7 +63,7 @@ namespace MediFlowApi
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<PrescriptionMapper>();
             builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
-
+            builder.Services.AddScoped<IDispensingService, DispensingService>();
             builder.Services.AddControllers();
 
             // 5. FluentValidation
@@ -151,6 +151,17 @@ namespace MediFlowApi
 
             app.MapControllers();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<AppDbContext>();
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                await DbInitializer.SeedAsync(context, userManager, roleManager);
+            }
+
+            app.Run();
             app.Run();
         }
     }
