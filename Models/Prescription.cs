@@ -13,6 +13,7 @@ namespace MediFlowApi.Models
         public Consultation Consultation { get; set; }
         [Required]
         public int  ConsultationId { get; set; }
+        public bool IsDispensed { get; set; }=false;
 
     }
 }

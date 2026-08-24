@@ -26,6 +26,7 @@ namespace MediFlowApi.DTOs
                 Dose = dto.Dose,
                 Instructions = dto.Instructions,
                 MedicineId = dto.MedicineId,
+                Quantity=dto.Quantity
             };
         }
 

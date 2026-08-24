@@ -17,5 +17,7 @@ namespace MediFlowApi.Models
         public DateTime ExpireDate { get; set; }
        
         public DateTime CreatedAt { get; set; }=DateTime.Now;
+        public int StockQuantity { get; set; } 
+
     }
 }

@@ -5,5 +5,6 @@
         public string Dose { get; set; }
         public string? Instructions { get; set; }
         public int MedicineId { get; set; }
+        public int Quantity { get; set; }
     }
 }

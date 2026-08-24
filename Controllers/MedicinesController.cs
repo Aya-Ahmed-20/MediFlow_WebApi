@@ -29,15 +29,12 @@ namespace MediFlowApi.Controllers
             return Ok(med);
         }
         [HttpPost]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Pharmacist")]
         public async Task<IActionResult> Post([FromBody] MedicineCreateDto medicineDto)
         {
-            // لسنا بحاجة لفحص ModelState يدوياً إذا كان الكلاس عليه [ApiController]
-            // لأن .NET تقوم بذلك تلقائياً وترجع 400 Bad Request
-
+            
             var createdMedicine = await _medicineService.AddAsync(medicineDto);
 
-            // استخدام GetById ليرجع للمستخدم رابط الوصول للعنصر الجديد
             return CreatedAtAction(nameof(GetById), new { id = createdMedicine.Id }, createdMedicine);
         }
 
